@@ -11,6 +11,7 @@ from iminuit import Minuit
 def generate_time(n1,tau):
     root_time_measurements = []
     #TODO:generate exponential random numbers->store in root_time_measurements
+    #hints:You can use TRandom3() class from Root
     return root_time_measurements
 
 ##generating exponential random number t using numpy
@@ -34,12 +35,13 @@ def plot_time_measurements(outfile):
     plt.ylabel("")
     plt.legend()
     plt.title("Generated Exponential Distribution")
+    plt.savefig("TimeMeasurements.png")
     plt.show()
     plt.close('all')
 
 outfile = ROOT.TFile("DecayTimeMeasurements.root", "recreate")
 n1 = 1000 #number of time measurements in a particular experiment
-tau = 5 #mean muon lifetime
+tau = 2 #mean muon lifetime
 time_measurements = generate_time(n1,tau) 
 #time_measurements = generate_time_numpy(n1,tau) #generating exponential random number t using numpy
 fill_tree_with_time(outfile, time_measurements) 
@@ -53,8 +55,11 @@ def fit_time_measurements(outfile):
     tree = outfile.Get("time_measurements")
 
     def fcn(tau):
-    #TODO: Read the random numbers from outfile and generate 2NLL (f)
-        return f
+        time = [entry.x for entry in tree]
+        lnL = 0.0 
+        for x in time:                                                                 
+          #TODO: construct the log likelihood
+        return -2.0*lnL
     minuit = Minuit(fcn, tau=2)
     minuit.limits["tau"] = (2, 10)
     minuit.migrad()
@@ -84,6 +89,7 @@ def plot_time_measurement_fit(outfile, tau_expected):
         bbox=dict(facecolor='white', alpha=0.8),
     )
     plt.title("Fitted Exponential Distribution")
+    plt.savefig("TimeMeasurementsFit.png")
     plt.show()
     plt.close('all')
     
@@ -107,8 +113,9 @@ def plot_tau_expected(tau_expected_samples):
     plt.ylabel(" ")
     plt.title("Histogram of expected tau in many experiments")
     plt.legend()
+    plt.savefig("ExpectedTauDist.png")
     plt.show()
-
+    
 plot_tau_expected(tau_expected_samples)
 
 # Part 4: From the distribution of expected tau, calculate the std and match with the expected (sigma/sqrt(n)) one from CLT
@@ -120,4 +127,5 @@ def check_error(tau_expected_samples,n1,n2,tau):
     print(f"Expected std : {time_measurements_std:.4f}")
     print(f"Ratio: {tau_expected_std / time_measurements_std:.4f}")
 check_error(tau_expected_samples, n1, n2, tau)
+
 '''

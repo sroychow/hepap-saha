@@ -45,18 +45,19 @@ def plot_time_measurements(outfile):
     plt.ylabel("")
     plt.legend()
     plt.title("Generated Exponential Distribution")
+    plt.savefig("TimeMeasurements.png")
     plt.show()
     plt.close('all')
 
 outfile = ROOT.TFile("DecayTimeMeasurements.root", "recreate")
 n1 = 1000 #number of time measurements in a particular experiment
-tau = 5 #mean muon lifetime
+tau = 2 #mean muon lifetime
 time_measurements = generate_time(n1,tau) 
 #time_measurements = generate_time_numpy(n1,tau) #generating exponential random number t using numpy
 fill_tree_with_time(outfile, time_measurements) 
 plot_time_measurements(outfile)
 
-'''
+
 # Part2: Fit exponential random numbers and plot it ;
 
 ##Unbinned NLL fit to the generated time_measurements data using Minuit
@@ -103,7 +104,8 @@ def plot_time_measurement_fit(outfile, tau_expected):
         bbox=dict(facecolor='white', alpha=0.8),
     )
     plt.title("Fitted Exponential Distribution")
-    plt.show()
+    plt.savefig("TimeMeasurements.png")
+    plt.show() 
     plt.close('all')
     
 ## Fit distribution and then plot the fit along with data
@@ -132,7 +134,9 @@ def plot_tau_expected(tau_expected_samples):
     plt.ylabel(" ")
     plt.title("Histogram of expected tau in many experiments")
     plt.legend()
+    plt.savefig("ExpectedTauDist.png")
     plt.show()
+
 
 plot_tau_expected(tau_expected_samples)
 
@@ -147,4 +151,4 @@ def check_error(tau_expected_samples,n1,n2,tau):
     print(f"Expected std : {time_measurements_std:.4f}")
     print(f"Ratio: {tau_expected_std / time_measurements_std:.4f}")
 check_error(tau_expected_samples, n1, n2, tau)
-'''
+
